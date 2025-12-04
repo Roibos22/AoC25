@@ -24,7 +24,24 @@ def part_one(data):
     return(res)
 
 def part_two(data):
-    pass
+    res = 0
+    while 42:
+        rolls_start = sum(row.count('@') for row in data)
+        for y in range(len(data)):
+            for x in range(len(data[y])):
+                if data[y][x] != '@':
+                    continue
+                neighbours = []
+                for dy, dx in dirs:
+                    if 0 <= y+dy < len(data) and 0 <= x+dx < len(data[y]):
+                        neighbours.append(data[y+dy][x+dx])
+                if neighbours.count('@') < 4:
+                    data[y][x] = '.'
+                    res += 1
+        rolls_end = sum(row.count('@') for row in data)
+        if rolls_start == rolls_end:
+            break
+    return(res)
 
 def main():
     data = [list(line.strip()) for line in open(filename)]

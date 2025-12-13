@@ -12,15 +12,24 @@ def part_one(ranges, ids):
                 break
     return res
 
-def part_two(ranges, ids):
-    pass
+
+def part_two(ranges):
+    ranges.sort()
+    res, max_num = 0, 0
+    for start, end in ranges:
+        if start > max_num:
+            res += end - start + 1
+        elif end > max_num:
+            res += end - max_num
+        max_num = max(max_num, end)
+    return res
+
 
 def main():
     ranges_str, ids_str = open(filename).read().strip().split('\n\n')
     ranges = [tuple(map(int, r.split('-'))) for r in ranges_str.splitlines()]
     ids = [int(i) for i in ids_str.splitlines()]
-    print(ranges, ids)
     print("Part 1 -> ", part_one(ranges, ids))
-    print("Part 2 -> ", part_two(ranges, ids))
+    print("Part 2 -> ", part_two(ranges))
 
 main()

@@ -1,5 +1,6 @@
 import sys
 filename = "input_test.txt" if len(sys.argv) == 2 and sys.argv[1] == "test" else "input.txt"
+connections = 10 if len(sys.argv) == 2 and sys.argv[1] == "test" else 1000
 data = list(open(filename).read().splitlines())
 data = [tuple(map(int, line.split(','))) for line in data]
 
@@ -20,7 +21,7 @@ def part_one(data):
                 d = get_distance(p1, p2)
                 distances.append((p1, p2, d))
     distances.sort(key=lambda x: x[-1])
-    distances = distances[:1000]
+    distances = distances[:connections]
 
     circuits = []
     for p1, p2, _ in distances:
@@ -44,7 +45,31 @@ def part_one(data):
 
 
 def part_two(data):
-    pass
+    distances = []
+    for p1i, p1 in enumerate(data):
+        for p2i, p2 in enumerate(data):
+            if p2i >= p1i: continue
+            if p1 is not p2:
+                d = get_distance(p1, p2)
+                distances.append((p1, p2, d))
+    distances.sort(key=lambda x: x[-1])
+
+    circuits = []
+    for p1, p2, _ in distances:
+        found_circuits = []
+        for circuit in circuits:
+            if p1 in circuit or p2 in circuit:
+                found_circuits.append(circuit)
+        if not found_circuits:
+            circuits.append(set([p1, p2]))
+        else:
+            merged = set([p1, p2])
+            for circuit in found_circuits:
+                merged.update(circuit)
+                circuits.remove(circuit)
+            circuits.append(merged)
+            if len(circuits) == 1 and len(circuits[0]) == len(data):
+                return(p1[0]*p2[0])
 
 print("Part 1 -> ", part_one(data))
 print("Part 2 -> ", part_two(data))
